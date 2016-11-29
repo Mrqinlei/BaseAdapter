@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.qinlei.num.refreshview.R;
@@ -54,7 +56,7 @@ public abstract class LoadAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_NORMAL) {
-            return loadOnCreateViewHolder( parent,  viewType);
+            return loadOnCreateViewHolder(parent, viewType);
         }
         if (viewType == TYPE_FOOT) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.load, parent, false);
@@ -77,6 +79,7 @@ public abstract class LoadAdapter extends RecyclerView.Adapter {
 
     /**
      * 为item设置数据
+     *
      * @param holder
      * @param position
      */
@@ -98,32 +101,39 @@ public abstract class LoadAdapter extends RecyclerView.Adapter {
     protected void bindFooterItem(FootHolder holder) {
         switch (load_status) {
             case STATUS_LOADING:
-                holder.loadTv.setVisibility(View.VISIBLE);
+                holder.footRoot.setVisibility(View.VISIBLE);
+                holder.mProgressBar.setVisibility(View.VISIBLE);
                 holder.loadTv.setText("loading");
                 break;
             case STATUS_ERROR:
-                holder.loadTv.setVisibility(View.VISIBLE);
+                holder.footRoot.setVisibility(View.VISIBLE);
+                holder.mProgressBar.setVisibility(View.GONE);
                 holder.loadTv.setText("load error");
                 break;
             case STATUS_GONE:
-                holder.loadTv.setVisibility(View.GONE);
+                holder.footRoot.setVisibility(View.GONE);
                 break;
             case STATUS_INVISIBLE:
-                holder.loadTv.setVisibility(View.INVISIBLE);
+                holder.footRoot.setVisibility(View.INVISIBLE);
                 break;
             case STATUS_OVER:
-                holder.loadTv.setVisibility(View.VISIBLE);
+                holder.footRoot.setVisibility(View.VISIBLE);
+                holder.mProgressBar.setVisibility(View.GONE);
                 holder.loadTv.setText("over");
                 break;
         }
     }
 
     class FootHolder extends RecyclerView.ViewHolder {
+        private RelativeLayout footRoot;
         private TextView loadTv;
+        private ProgressBar mProgressBar;
 
         public FootHolder(View itemView) {
             super(itemView);
-            loadTv = (TextView) itemView.findViewById(R.id.footer);
+            footRoot = (RelativeLayout) (itemView = itemView.findViewById(R.id.root));
+            loadTv = (TextView) itemView.findViewById(R.id.footer_textview);
+            mProgressBar = (ProgressBar) itemView.findViewById(R.id.footer_progressBar);
         }
     }
 }
