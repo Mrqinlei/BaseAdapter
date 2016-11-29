@@ -9,11 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.qinlei.num.refreshview.LoadRecyclerView
+        <com.qinlei.num.refreshview.refresh.LoadRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </com.qinlei.num.refreshview.LoadRecyclerView>
+        </com.qinlei.num.refreshview.refresh.LoadRecyclerView>
     </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

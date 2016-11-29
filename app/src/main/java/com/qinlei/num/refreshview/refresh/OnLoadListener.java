@@ -1,4 +1,4 @@
-package com.qinlei.num.refreshview;
+package com.qinlei.num.refreshview.refresh;
 
 /**
  * 加载更多回调接口
