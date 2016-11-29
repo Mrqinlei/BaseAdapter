@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/list_item"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="70dp"
         android:gravity="center_vertical"
         android:paddingLeft="15dp"
         android:text="10001"
