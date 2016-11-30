@@ -1,6 +1,8 @@
 package com.qinlei.num.refreshview.refresh;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,9 +43,8 @@ public abstract class LoadAdapter extends RecyclerView.Adapter {
         this.load_status = load_status;
         try {
             bindFooterItem(footHolder);
-            notifyDataSetChanged();
+            notifyItemChanged(getItemCount());
         } catch (NullPointerException e) {
-            Log.d(TAG, "NullPointerException: ");
         }
     }
 
@@ -121,6 +122,35 @@ public abstract class LoadAdapter extends RecyclerView.Adapter {
                 holder.mProgressBar.setVisibility(View.GONE);
                 holder.loadTv.setText("over");
                 break;
+        }
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {//只能被调用一次
+        super.onAttachedToRecyclerView(recyclerView);
+        Log.d(TAG, "onAttachedToRecyclerView: ");
+        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+        if(manager instanceof GridLayoutManager) {
+            final GridLayoutManager gridManager = ((GridLayoutManager) manager);
+            gridManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return getItemViewType(position) == TYPE_FOOT
+                            ? gridManager.getSpanCount() : 1;
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
+        if(lp != null
+                && lp instanceof StaggeredGridLayoutManager.LayoutParams
+                && holder.getLayoutPosition() == getItemCount()-1) {
+            StaggeredGridLayoutManager.LayoutParams p = (StaggeredGridLayoutManager.LayoutParams) lp;
+            p.setFullSpan(true);
         }
     }
 
