@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                         mData.add(0, "refresh_item");
                         myLoadAdapter.notifyItemInserted(0);
                         mSwipeRefreshLayout.setRefreshing(false);
+                        mRecyclerView.scrollToPosition(0);
                     }
                 }, 1000);
             }
