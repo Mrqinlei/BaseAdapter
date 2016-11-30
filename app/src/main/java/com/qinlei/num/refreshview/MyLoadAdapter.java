@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.qinlei.num.refreshview.refresh.LoadAdapter;
@@ -15,11 +16,11 @@ import java.util.List;
  */
 
 public class MyLoadAdapter extends LoadAdapter {
-    private List<String> mData;
+    private List<Bean> mData;
 
     public MyLoadAdapter(List<?> mData) {
         super(mData);
-        this.mData = (List<String>) mData;
+        this.mData = (List<Bean>) mData;
     }
 
     @Override
@@ -30,15 +31,21 @@ public class MyLoadAdapter extends LoadAdapter {
 
     @Override
     protected void loadOnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MyLoadAdapter.ViewHolder) holder).itemTv.setText(mData.get(position));
+        ((MyLoadAdapter.ViewHolder) holder).itemTitle.setText(mData.get(position).getTitle());
+        ((MyLoadAdapter.ViewHolder) holder).itemContent.setText(mData.get(position).getContent());
+        ((MyLoadAdapter.ViewHolder) holder).imageView.setImageResource(mData.get(position).getResId());
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView itemTv;
+        private TextView itemTitle;
+        private TextView itemContent;
+        private ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            itemTv = (TextView) itemView.findViewById(R.id.list_item);
+            itemTitle = (TextView) itemView.findViewById(R.id.list_item);
+            imageView = (ImageView) itemView.findViewById(R.id.image);
+            itemContent = (TextView) itemView.findViewById(R.id.list_item_content);
         }
     }
 }
