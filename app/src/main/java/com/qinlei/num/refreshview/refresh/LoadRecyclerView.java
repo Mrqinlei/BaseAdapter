@@ -2,10 +2,11 @@ package com.qinlei.num.refreshview.refresh;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
-import android.util.Log;
 
 /**
  * Created by ql on 2016/11/29.
@@ -17,6 +18,8 @@ public class LoadRecyclerView extends RecyclerView {
     private boolean isLoad;//是否处于加载状态，需要手动设置关闭状态，不然无法正常加载
 
     private OnLoadListener mOnLoadListener;
+
+    private int last;
 
     public void setmOnLoadListener(OnLoadListener mOnLoadListener) {
         this.mOnLoadListener = mOnLoadListener;
@@ -49,13 +52,25 @@ public class LoadRecyclerView extends RecyclerView {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                // TODO: 2016/11/29 判断layoutManager的类型，目前还未处理
-                int last = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                LayoutManager layoutManager = recyclerView.getLayoutManager();
+                if (layoutManager instanceof LinearLayoutManager) {
+                    last = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+                }
+                if (layoutManager instanceof GridLayoutManager) {
+                    last = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
+                }
+                if (layoutManager instanceof StaggeredGridLayoutManager) {
+                    int[] lastList = null;
+                    lastList = new int[((StaggeredGridLayoutManager) layoutManager).getSpanCount()];
+                    int[] lastVisibleItemPositions = ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(lastList);
+                    for (int i : lastVisibleItemPositions) {
+                        last = i > last ? i : last;
+                    }
+                }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE
                         && last + 1 == recyclerView.getAdapter().getItemCount()
                         && recyclerView.getAdapter().getItemCount() > 1) {
                     if (mOnLoadListener != null && isLoad == false) {
-                        Log.d(TAG, "onScrollStateChanged: " + "load");
                         isLoad = true;
                         mOnLoadListener.onLoadListener();
                     }
