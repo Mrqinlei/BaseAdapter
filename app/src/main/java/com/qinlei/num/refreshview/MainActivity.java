@@ -79,10 +79,9 @@ public class MainActivity extends AppCompatActivity {
                                 mData.add(new Bean("load_title","load_content",R.mipmap.ic_launcher));
                                 myLoadAdapter.notifyItemInserted(mData.size()+i);
                             }
-                            mRecyclerView.setLoad(false);//加载完成设置标记
+                            myLoadAdapter.setLoad_status(LoadAdapter.STATUS_INVISIBLE);
                         } else {
                             myLoadAdapter.setLoad_status(LoadAdapter.STATUS_ERROR);
-                            mRecyclerView.setLoad(false);//加载完成设置标记
                         }
                     }
                 }, 1000);

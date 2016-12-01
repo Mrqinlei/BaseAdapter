@@ -26,11 +26,16 @@ public abstract class LoadAdapter extends RecyclerView.Adapter {
 
     private int load_status = STATUS_GONE;
 
-    public static final int STATUS_LOADING = 0;
-    public static final int STATUS_OVER = 1;
+    public static final int STATUS_LOADING = 0;//该状态加载不可用
+    public static final int STATUS_OVER = 1;//该状态加载不可用
+    public static final int STATUS_REFRESH = 5;//该状态加载不可用
     public static final int STATUS_GONE = 2;
     public static final int STATUS_INVISIBLE = 3;
     public static final int STATUS_ERROR = 4;
+
+    public int getLoad_status() {
+        return load_status;
+    }
 
     private FootHolder footHolder;
 
