@@ -15,7 +15,7 @@ import android.util.AttributeSet;
 public class LoadRecyclerView extends RecyclerView {
     private static final String TAG = LoadRecyclerView.class.getSimpleName();
 
-    private boolean isEnable = true;//设置加载可不可用
+    private boolean isEnable = true;
 
     private OnLoadListener mOnLoadListener;
 
@@ -27,7 +27,7 @@ public class LoadRecyclerView extends RecyclerView {
 
     public void setEnable(boolean enable) {
         isEnable = enable;
-    }
+    }//设置加载可不可用
 
     public LoadRecyclerView(Context context) {
         super(context);
