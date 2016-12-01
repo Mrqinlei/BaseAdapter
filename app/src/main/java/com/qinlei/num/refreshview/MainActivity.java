@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private LoadRecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private MyLoadAdapter myLoadAdapter;
-    private List<String> mData = new ArrayList<>();
+    private List<Bean> mData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData() {
         for (int i = 0; i < 10; i++) {
-            mData.add("refresh");
+            mData.add(new Bean("title","content",R.mipmap.ic_launcher));
         }
     }
 
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 mRecyclerView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mData.add(0, "refresh_item");
+                        mData.add(0, new Bean("refreash_title","refresh_content",R.mipmap.ic_launcher));
                         myLoadAdapter.notifyItemInserted(0);
                         mSwipeRefreshLayout.setRefreshing(false);
                         mRecyclerView.scrollToPosition(0);
@@ -76,13 +76,12 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         if (mData.size() < 45) {
                             for (int i = 0; i < 10; i++) {
-                                mData.add("load");
+                                mData.add(new Bean("load_title","load_content",R.mipmap.ic_launcher));
                                 myLoadAdapter.notifyItemInserted(mData.size()+i);
                             }
-                            mRecyclerView.setLoad(false);//加载完成设置标记
+                            myLoadAdapter.setLoad_status(LoadAdapter.STATUS_INVISIBLE);
                         } else {
                             myLoadAdapter.setLoad_status(LoadAdapter.STATUS_ERROR);
-                            mRecyclerView.setLoad(false);//加载完成设置标记
                         }
                     }
                 }, 1000);

@@ -15,7 +15,7 @@ import android.util.AttributeSet;
 public class LoadRecyclerView extends RecyclerView {
     private static final String TAG = LoadRecyclerView.class.getSimpleName();
 
-    private boolean isLoad;//是否处于加载状态，需要手动设置关闭状态，不然无法正常加载
+    private boolean isEnable = true;
 
     private OnLoadListener mOnLoadListener;
 
@@ -25,9 +25,9 @@ public class LoadRecyclerView extends RecyclerView {
         this.mOnLoadListener = mOnLoadListener;
     }
 
-    public void setLoad(boolean load) {
-        isLoad = load;
-    }
+    public void setEnable(boolean enable) {
+        isEnable = enable;
+    }//设置加载可不可用
 
     public LoadRecyclerView(Context context) {
         super(context);
@@ -70,9 +70,14 @@ public class LoadRecyclerView extends RecyclerView {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE
                         && last + 1 == recyclerView.getAdapter().getItemCount()
                         && recyclerView.getAdapter().getItemCount() > 1) {
-                    if (mOnLoadListener != null && isLoad == false) {
-                        isLoad = true;
-                        mOnLoadListener.onLoadListener();
+                    if (((LoadAdapter) getAdapter()).getLoad_status() == LoadAdapter.STATUS_LOADING ||
+                            ((LoadAdapter) getAdapter()).getLoad_status() == LoadAdapter.STATUS_OVER ||
+                            ((LoadAdapter) getAdapter()).getLoad_status() == LoadAdapter.STATUS_REFRESH) {
+                        //状态为加载、到达底部、刷新状态时不进行任何操作
+                    } else {
+                        if (isEnable) {
+                            mOnLoadListener.onLoadListener();
+                        }
                     }
                 }
             }
