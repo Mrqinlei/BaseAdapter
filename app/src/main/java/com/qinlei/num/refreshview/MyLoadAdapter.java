@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.qinlei.num.refreshview.refresh.LoadAdapter;
+import com.qinlei.num.loadrecyclerlib.refresh.LoadAdapter;
 
 import java.util.List;
 
@@ -16,11 +16,11 @@ import java.util.List;
  */
 
 public class MyLoadAdapter extends LoadAdapter {
-    private List<Bean> mData;
+    private List<Bean.ResultBean.ListBean> mData;
 
     public MyLoadAdapter(List<?> mData) {
         super(mData);
-        this.mData = (List<Bean>) mData;
+        this.mData = (List<Bean.ResultBean.ListBean>) mData;
     }
 
     @Override
@@ -31,9 +31,9 @@ public class MyLoadAdapter extends LoadAdapter {
 
     @Override
     protected void loadOnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ((MyLoadAdapter.ViewHolder) holder).itemTitle.setText(mData.get(position).getTitle());
-        ((MyLoadAdapter.ViewHolder) holder).itemContent.setText(mData.get(position).getContent());
-        ((MyLoadAdapter.ViewHolder) holder).imageView.setImageResource(mData.get(position).getResId());
+        ((MyLoadAdapter.ViewHolder) holder).itemTitle.setText(mData.get(position).getSource());
+        ((MyLoadAdapter.ViewHolder) holder).itemContent.setText(mData.get(position).getTitle());
+        ((MyLoadAdapter.ViewHolder) holder).imageView.setImageResource(R.mipmap.ic_launcher);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,4 +1,4 @@
-package com.qinlei.num.refreshview.refresh;
+package com.qinlei.num.loadrecyclerlib.refresh;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

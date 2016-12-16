@@ -1,4 +1,4 @@
-package com.qinlei.num.refreshview.refresh;
+package com.qinlei.num.loadrecyclerlib.refresh;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.qinlei.num.refreshview.R;
+import com.qinlei.num.loadrecyclerlib.R;
 
 import java.util.List;
 
