@@ -28,6 +28,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:recyclerview-v7:25.0.1'
     compile project(':loadrecyclerlib')
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
     compile 'com.squareup.okhttp3:okhttp:3.5.0'
-    compile 'com.alibaba:fastjson:1.2.21'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.5.0'
 }
