@@ -3,8 +3,8 @@ package com.qinlei.num.refreshview;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.Toast;
 
 import com.qinlei.num.loadrecyclerlib.LoadMoreListener;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAdapter() {
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         myAdapter = new MyAdapter(mDatas);
         recyclerView.setAdapter(myAdapter);
     }
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshData() {
         cancelLoadMoreRequest();
+        setLoadMoreAble();
         swipeRefreshLayout.setRefreshing(true);
         refreshCall = ServiceGenerator
                 .getNormalRetrofitInstance(ParkApi.class)
@@ -98,6 +99,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //设置加载可用
+    private void setLoadMoreAble() {
+        myAdapter.setLoadMoreInvisible();
+    }
+
     private void cancelLoadMoreRequest() {
         if (loadMoreCall != null) {
             loadMoreCall.cancel();
@@ -112,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         loadMoreCall.enqueue(new Callback<ThemeContentBean>() {
             @Override
             public void onResponse(Call<ThemeContentBean> call, Response<ThemeContentBean> response) {
-                myAdapter.setLoadMoreInvisible();
+                myAdapter.setLoadMoreOver();
                 mDatas.addAll(response.body().getStories());
                 myAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);

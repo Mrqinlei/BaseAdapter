@@ -13,8 +13,6 @@ import static com.qinlei.num.loadrecyclerlib.BaseLoadMoreAdapter.STATUS_OVER;
  */
 
 public abstract class LoadMoreListener extends RecyclerView.OnScrollListener {
-    private int lastItemPosition; //最后一个item 的positon
-    private int totlacount;       //总的item个数
 
     private BaseLoadMoreAdapter moreAdapter;
     private IsRefreshListener isRefresh;
@@ -26,8 +24,9 @@ public abstract class LoadMoreListener extends RecyclerView.OnScrollListener {
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
+        int lastItemPosition = 0;
+        int totlacount = recyclerView.getAdapter().getItemCount();
         moreAdapter = (BaseLoadMoreAdapter) recyclerView.getAdapter();
-        totlacount = recyclerView.getAdapter().getItemCount();
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof LinearLayoutManager) {
             lastItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
