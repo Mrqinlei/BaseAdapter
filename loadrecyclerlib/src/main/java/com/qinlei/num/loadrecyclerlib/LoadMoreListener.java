@@ -1,7 +1,9 @@
 package com.qinlei.num.loadrecyclerlib;
 
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import static com.qinlei.num.loadrecyclerlib.BaseLoadMoreAdapter.STATUS_LOADING;
 import static com.qinlei.num.loadrecyclerlib.BaseLoadMoreAdapter.STATUS_OVER;
@@ -15,10 +17,10 @@ public abstract class LoadMoreListener extends RecyclerView.OnScrollListener {
     private int totlacount;       //总的item个数
 
     private BaseLoadMoreAdapter moreAdapter;
-    private CustomIsRefreshListener customIsRefreshListener;
+    private IsRefreshListener isRefresh;
 
-    public LoadMoreListener(CustomIsRefreshListener customIsRefreshListener) {
-        this.customIsRefreshListener = customIsRefreshListener;
+    public LoadMoreListener(IsRefreshListener isRefresh) {
+        this.isRefresh = isRefresh;
     }
 
     @Override
@@ -29,6 +31,17 @@ public abstract class LoadMoreListener extends RecyclerView.OnScrollListener {
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof LinearLayoutManager) {
             lastItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
+        }
+        if (layoutManager instanceof GridLayoutManager) {
+            lastItemPosition = ((GridLayoutManager) layoutManager).findLastVisibleItemPosition();
+        }
+        if (layoutManager instanceof StaggeredGridLayoutManager) {
+            int[] lastList = null;
+            lastList = new int[((StaggeredGridLayoutManager) layoutManager).getSpanCount()];
+            int[] lastVisibleItemPositions = ((StaggeredGridLayoutManager) layoutManager).findLastVisibleItemPositions(lastList);
+            for (int i : lastVisibleItemPositions) {
+                lastItemPosition = i > lastItemPosition ? i : lastItemPosition;
+            }
         }
         if (newState == RecyclerView.SCROLL_STATE_IDLE
                 && lastItemPosition + 1 == totlacount
@@ -51,7 +64,7 @@ public abstract class LoadMoreListener extends RecyclerView.OnScrollListener {
     }
 
     public boolean isRefreshing() {
-        return customIsRefreshListener.isRefresh();
+        return isRefresh.isRefresh();
     }
 
     @Override

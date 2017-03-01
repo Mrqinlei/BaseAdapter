@@ -3,15 +3,14 @@ package com.qinlei.num.refreshview;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.Toast;
 
 import com.qinlei.num.loadrecyclerlib.LoadMoreListener;
-import com.qinlei.num.loadrecyclerlib.CustomIsRefreshListener;
+import com.qinlei.num.refreshview.adapter.MyAdapter;
 import com.qinlei.num.refreshview.api.ServiceGenerator;
 import com.qinlei.num.refreshview.api.apiservice.ParkApi;
-import com.qinlei.num.refreshview.model.MyAdapter;
 import com.qinlei.num.refreshview.model.Stories;
 import com.qinlei.num.refreshview.model.ThemeContentBean;
 
@@ -47,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAdapter() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
         myAdapter = new MyAdapter(mDatas);
         recyclerView.setAdapter(myAdapter);
     }
@@ -59,12 +58,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initListener() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshData();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        refreshData();
+                    }
+                });
 
         recyclerView.setOnScrollListener(new LoadMoreListener(
                 new CustomIsRefreshListener(swipeRefreshLayout)) {

@@ -1,9 +1,10 @@
-package com.qinlei.num.refreshview.model;
+package com.qinlei.num.refreshview.adapter;
 
 import android.widget.ImageView;
 
 import com.qinlei.num.loadrecyclerlib.BaseLoadMoreAdapter;
 import com.qinlei.num.refreshview.R;
+import com.qinlei.num.refreshview.model.Stories;
 
 import java.util.List;
 

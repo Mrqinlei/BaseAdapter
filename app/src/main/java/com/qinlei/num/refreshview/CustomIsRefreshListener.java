@@ -1,6 +1,8 @@
-package com.qinlei.num.loadrecyclerlib;
+package com.qinlei.num.refreshview;
 
 import android.support.v4.widget.SwipeRefreshLayout;
+
+import com.qinlei.num.loadrecyclerlib.IsRefreshListener;
 
 /**
  * Created by ql on 2017/3/1.
