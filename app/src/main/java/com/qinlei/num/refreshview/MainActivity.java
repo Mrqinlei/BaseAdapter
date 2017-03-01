@@ -3,37 +3,34 @@ package com.qinlei.num.refreshview;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.v7.widget.RecyclerView;
+import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
-import com.qinlei.num.loadrecyclerlib.refresh.LoadAdapter;
-import com.qinlei.num.loadrecyclerlib.refresh.LoadRecyclerView;
-import com.qinlei.num.loadrecyclerlib.refresh.OnLoadListener;
+import com.qinlei.num.loadrecyclerlib.LoadMoreListener;
+import com.qinlei.num.loadrecyclerlib.CustomIsRefreshListener;
+import com.qinlei.num.refreshview.api.ServiceGenerator;
+import com.qinlei.num.refreshview.api.apiservice.ParkApi;
+import com.qinlei.num.refreshview.model.MyAdapter;
+import com.qinlei.num.refreshview.model.Stories;
+import com.qinlei.num.refreshview.model.ThemeContentBean;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
-    private LoadRecyclerView mRecyclerView;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    private MyLoadAdapter myLoadAdapter;
-    private List<Bean.ResultBean.ListBean> mData = new ArrayList<>();
-    private final OkHttpClient client = new OkHttpClient();
-    private int page = 100;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private RecyclerView recyclerView;
+
+    private List<Stories> mDatas = new ArrayList<>();
+    private MyAdapter myAdapter;
+    private Call refreshCall;
+    private Call loadMoreCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,123 +41,91 @@ public class MainActivity extends AppCompatActivity {
         initListener();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mSwipeRefreshLayout.setRefreshing(true);
-        httpLoadData();
-    }
-
-    private void httpLoadData() {
-        String url = "http://v.juhe.cn/weixin/query?pno=" + page + "&ps=10&dtype=json&key=2aec6f104c6e0b0fa85ebca6e2a00cb8";
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setRefreshOver();
-                        if (page != 100) {//代表加载
-                            page--;
-                            myLoadAdapter.setLoad_status(LoadAdapter.STATUS_ERROR);
-                        } else {
-                            myLoadAdapter.setLoad_status(LoadAdapter.STATUS_INVISIBLE);
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String json = response.body().string();
-                final Bean bean = JSON.parseObject(json, Bean.class);
-                if (page == 100) {
-                    mData.clear();
-                }
-                if (bean.getError_code() != 0) {
-                    page--;
-                }
-                mData.addAll(bean.getResult().getList());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setRefreshOver();
-                        myLoadAdapter.notifyDataSetChanged();
-                        if (page != 100) {//代表加载
-                            if (bean.getResult().getList().size() == 10) {
-                                myLoadAdapter.setLoad_status(LoadAdapter.STATUS_INVISIBLE);
-                            } else {
-                                myLoadAdapter.setLoad_status(LoadAdapter.STATUS_OVER);
-                            }
-                        }
-                    }
-                });
-            }
-        });
-    }
-
-    private void setRefreshOver() {
-        if (mSwipeRefreshLayout.isRefreshing()) {
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
-    }
-
     private void initView() {
-        mRecyclerView = (LoadRecyclerView) findViewById(R.id.recycler_view);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
     }
 
     private void initAdapter() {
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        myLoadAdapter = new MyLoadAdapter(mData);
-        mRecyclerView.setAdapter(myLoadAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        myAdapter = new MyAdapter(mDatas);
+        recyclerView.setAdapter(myAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshData();
     }
 
     private void initListener() {
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page = 100;
-                myLoadAdapter.setLoad_status(LoadAdapter.STATUS_GONE);
-                httpLoadData();
+                refreshData();
             }
         });
-        mRecyclerView.setmOnLoadListener(new OnLoadListener() {
+
+        recyclerView.setOnScrollListener(new LoadMoreListener(
+                new CustomIsRefreshListener(swipeRefreshLayout)) {
             @Override
-            public void onLoadListener() {
-                myLoadAdapter.setLoad_status(LoadAdapter.STATUS_LOADING);
-                page++;
-                httpLoadData();
+            public void onLoadMore() {
+                loadMoreData();
             }
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
-        return true;
+    public void refreshData() {
+        cancelLoadMoreRequest();
+        swipeRefreshLayout.setRefreshing(true);
+        refreshCall = ServiceGenerator
+                .getNormalRetrofitInstance(ParkApi.class)
+                .getThemeNews(11);
+        refreshCall.enqueue(new Callback<ThemeContentBean>() {
+            @Override
+            public void onResponse(Call<ThemeContentBean> call, Response<ThemeContentBean> response) {
+                mDatas.clear();
+                mDatas.addAll(response.body().getStories());
+                myAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<ThemeContentBean> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "加载失败", Toast.LENGTH_SHORT).show();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_grid:
-                mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-                return true;
-            case R.id.menu_linear:
-                mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                return true;
-            case R.id.menu_staggered_grid:
-                mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    private void cancelLoadMoreRequest() {
+        if (loadMoreCall != null) {
+            loadMoreCall.cancel();
         }
     }
 
+    public void loadMoreData() {
+        myAdapter.setLoadMoreLoading();
+        loadMoreCall = ServiceGenerator
+                .getNormalRetrofitInstance(ParkApi.class)
+                .getThemeNewsBefore(11, mDatas.get(mDatas.size() - 1).getId());
+        loadMoreCall.enqueue(new Callback<ThemeContentBean>() {
+            @Override
+            public void onResponse(Call<ThemeContentBean> call, Response<ThemeContentBean> response) {
+                myAdapter.setLoadMoreInvisible();
+                mDatas.addAll(response.body().getStories());
+                myAdapter.notifyDataSetChanged();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<ThemeContentBean> call, Throwable t) {
+                if (call.isCanceled()) {
+                    Toast.makeText(MainActivity.this, "刷新时取消加载的网络请求", Toast.LENGTH_SHORT).show();
+                } else {
+                    myAdapter.setLoadMoreError();
+                }
+            }
+        });
+    }
 }
