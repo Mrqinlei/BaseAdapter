@@ -1,6 +1,9 @@
 # RefreshLoadRecyclerView
 简单的实现上拉加载，下拉刷新
 
+效果:  
+![](https://github.com/Mrqinlei/LoadRecyclerView/blob/master/PreviewImage/load.gif?raw=true)
+
 ###使用
 xml中定义:  
 刷新的控件可以选择任意的控件,这里使用SwipeRefreshLayout
