@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
+                        setLoadMoreAble();//设置加载可用
                         refreshData();
                     }
                 });
@@ -76,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refreshData() {
-        cancelLoadMoreRequest();
-        setLoadMoreAble();
+        cancelLoadMoreRequest();//取消加载的网络请求,如果正在加载数据的话
         swipeRefreshLayout.setRefreshing(true);
         refreshCall = ServiceGenerator
                 .getNormalRetrofitInstance(ParkApi.class)
@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //设置加载可用
     private void setLoadMoreAble() {
         myAdapter.setLoadMoreInvisible();
     }

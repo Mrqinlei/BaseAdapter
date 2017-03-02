@@ -25,7 +25,6 @@ public abstract class BaseLoadMoreAdapter<T> extends RecyclerView.Adapter<Recycl
     public static final int STATUS_ERROR = 14;
     private int dataSize = 10;//允许加载的最小数据量
     private List<T> mDatas;
-    private VHFooter vhFooter;
     private int load_status = STATUS_INVISIBLE;//默认状态
 
     public BaseLoadMoreAdapter(List<T> datas) {
@@ -52,9 +51,7 @@ public abstract class BaseLoadMoreAdapter<T> extends RecyclerView.Adapter<Recycl
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == ITEM_FOTTER) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_load_more, parent, false);
-            vhFooter = new VHFooter(view);
-            bindFooterItem(vhFooter);
-            return vhFooter;
+            return new VHFooter(view);
         } else {
             return VH.get(parent, getLayoutId(viewType));
         }
@@ -122,11 +119,11 @@ public abstract class BaseLoadMoreAdapter<T> extends RecyclerView.Adapter<Recycl
         }
     }
 
-    public static class VHFooter extends RecyclerView.ViewHolder {
-        private LinearLayout footRoot;
-        private TextView footTv;
-        private ProgressBar footProgressBar;
+    private LinearLayout footRoot;
+    private TextView footTv;
+    private ProgressBar footProgressBar;
 
+    public class VHFooter extends RecyclerView.ViewHolder {
         private VHFooter(View v) {
             super(v);
             footRoot = (LinearLayout) (itemView.findViewById(R.id.ll_item_load_more));
@@ -142,31 +139,28 @@ public abstract class BaseLoadMoreAdapter<T> extends RecyclerView.Adapter<Recycl
      */
     private void setLoad_status(int load_status) {
         this.load_status = load_status;
-        if (vhFooter != null) {
-            bindFooterItem(vhFooter);
-            notifyItemChanged(getItemCount());
-        }
+            bindFooterItem();
     }
 
-    protected void bindFooterItem(VHFooter holder) {
+    protected void bindFooterItem() {
         switch (load_status) {
             case STATUS_LOADING:
-                holder.footRoot.setVisibility(View.VISIBLE);
-                holder.footProgressBar.setVisibility(View.VISIBLE);
-                holder.footTv.setText("加载中...");
+                footRoot.setVisibility(View.VISIBLE);
+                footProgressBar.setVisibility(View.VISIBLE);
+                footTv.setText("加载中...");
                 break;
             case STATUS_ERROR:
-                holder.footRoot.setVisibility(View.VISIBLE);
-                holder.footProgressBar.setVisibility(View.GONE);
-                holder.footTv.setText("加载异常");
+                footRoot.setVisibility(View.VISIBLE);
+                footProgressBar.setVisibility(View.GONE);
+                footTv.setText("加载异常");
                 break;
             case STATUS_INVISIBLE:
-                holder.footRoot.setVisibility(View.INVISIBLE);
+                footRoot.setVisibility(View.INVISIBLE);
                 break;
             case STATUS_OVER:
-                holder.footRoot.setVisibility(View.VISIBLE);
-                holder.footProgressBar.setVisibility(View.GONE);
-                holder.footTv.setText("已经到底了");
+                footRoot.setVisibility(View.VISIBLE);
+                footProgressBar.setVisibility(View.GONE);
+                footTv.setText("已经到底了");
                 break;
         }
     }
