@@ -5,14 +5,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import static com.qinlei.num.loadrecyclerlib.BaseLoadMoreAdapter.STATUS_LOADING;
-import static com.qinlei.num.loadrecyclerlib.BaseLoadMoreAdapter.STATUS_OVER;
+import static com.qinlei.num.loadrecyclerlib.FootViewHolder.STATUS_LOADING;
+import static com.qinlei.num.loadrecyclerlib.FootViewHolder.STATUS_OVER;
 
 /**
  * Created by ql on 2017/2/28.
  */
 
 public abstract class LoadMoreListener extends RecyclerView.OnScrollListener {
+    private int dataSize = 10;//允许加载的最小数据量
+
+    public void setDataSize(int dataSize) {
+        this.dataSize = dataSize;
+    }
 
     private BaseLoadMoreAdapter moreAdapter;
     private IsRefreshListener isRefresh;
@@ -21,12 +26,13 @@ public abstract class LoadMoreListener extends RecyclerView.OnScrollListener {
         this.isRefresh = isRefresh;
     }
 
-    @Override
-    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-        super.onScrollStateChanged(recyclerView, newState);
-        int lastItemPosition = 0;
-        int totlacount = recyclerView.getAdapter().getItemCount();
-        moreAdapter = (BaseLoadMoreAdapter) recyclerView.getAdapter();
+    /**
+     * 获取列表中最后一个显示的item 的 position
+     *
+     * @param lastItemPosition
+     * @return
+     */
+    private int getLastItemPosition(int lastItemPosition, RecyclerView recyclerView) {
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (layoutManager instanceof LinearLayoutManager) {
             lastItemPosition = ((LinearLayoutManager) layoutManager).findLastVisibleItemPosition();
@@ -42,25 +48,34 @@ public abstract class LoadMoreListener extends RecyclerView.OnScrollListener {
                 lastItemPosition = i > lastItemPosition ? i : lastItemPosition;
             }
         }
+        return lastItemPosition;
+    }
+
+    @Override
+    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        super.onScrollStateChanged(recyclerView, newState);
+        int lastItemPosition = 0;
+        int totlacount = recyclerView.getAdapter().getItemCount();
+        lastItemPosition = getLastItemPosition(lastItemPosition, recyclerView);
+
+        moreAdapter = (BaseLoadMoreAdapter) recyclerView.getAdapter();
         if (newState == RecyclerView.SCROLL_STATE_IDLE
                 && lastItemPosition + 1 == totlacount
-                && totlacount >= moreAdapter.getDataSize() + 1) {
+                && totlacount >= dataSize + 1) {
             if (isRefreshing()) {
                 //如果正在刷新，则隐藏footer view
                 moreAdapter.setLoadMoreInvisible();
-            }
-            if (moreAdapter.getLoad_status() == STATUS_LOADING
-                    || moreAdapter.getLoad_status() == STATUS_OVER) {
-
             } else {
-                if (isRefreshing()) {
-                    //正在刷新不加载
+                if (moreAdapter.getLoad_status() == STATUS_LOADING
+                        || moreAdapter.getLoad_status() == STATUS_OVER) {
+
                 } else {
                     onLoadMore();
                 }
             }
         }
     }
+
 
     public boolean isRefreshing() {
         return isRefresh.isRefresh();

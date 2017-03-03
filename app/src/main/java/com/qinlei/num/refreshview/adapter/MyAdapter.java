@@ -3,6 +3,7 @@ package com.qinlei.num.refreshview.adapter;
 import android.widget.ImageView;
 
 import com.qinlei.num.loadrecyclerlib.BaseLoadMoreAdapter;
+import com.qinlei.num.loadrecyclerlib.ViewHolder;
 import com.qinlei.num.refreshview.R;
 import com.qinlei.num.refreshview.model.Stories;
 
@@ -30,15 +31,21 @@ public class MyAdapter extends BaseLoadMoreAdapter<Stories> {
     }
 
     @Override
-    public void convert(VH holder, Stories data, int position) {
+    public void convert(ViewHolder holder, Stories data, int position) {
         if (getNormalItemViewType(position) == IMAGE_1) {
             holder.setText(R.id.item_text_and_image_tv, data.getTitle());
-            ((ImageView) holder.getView(R.id.item_text_and_image_image)).setImageResource(R.mipmap.ic_launcher);
+            holder.getView(R.id.item_text_and_image_image, ImageView.class).setImageResource(R.mipmap.ic_launcher);
         } else {
             holder.setText(R.id.item_text_tv, data.getTitle());
         }
     }
 
+    /**
+     * 注意复写的是getNormalItemViewType 而不是getItemViewType
+     *
+     * @param position
+     * @return
+     */
     @Override
     public int getNormalItemViewType(int position) {
         if (getmDatas().get(position).getImages() == null || getmDatas().get(position).getImages().size() == 0) {
