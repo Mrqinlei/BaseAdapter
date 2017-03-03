@@ -117,10 +117,13 @@ public class MainActivity extends AppCompatActivity {
         loadMoreCall.enqueue(new Callback<ThemeContentBean>() {
             @Override
             public void onResponse(Call<ThemeContentBean> call, Response<ThemeContentBean> response) {
-                myAdapter.setLoadMoreOver();
-                mDatas.addAll(response.body().getStories());
-                myAdapter.notifyDataSetChanged();
-                swipeRefreshLayout.setRefreshing(false);
+                if (response.body().getStories().size() > 0) {
+                    myAdapter.setLoadMoreInvisible();
+                    mDatas.addAll(response.body().getStories());
+                    myAdapter.notifyDataSetChanged();
+                } else {
+                    myAdapter.setLoadMoreOver();
+                }
             }
 
             @Override
