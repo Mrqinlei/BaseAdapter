@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refreshData() {
+        myAdapter.setLoadMoreInvisible();
         cancelLoadMoreRequest();//取消加载的网络请求,如果正在加载数据的话
         swipeRefreshLayout.setRefreshing(true);
         refreshCall = ServiceGenerator

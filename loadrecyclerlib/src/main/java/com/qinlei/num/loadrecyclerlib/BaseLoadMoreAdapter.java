@@ -80,18 +80,22 @@ public abstract class BaseLoadMoreAdapter<T> extends RecyclerView.Adapter<Recycl
     }
 
     public void setLoadMoreLoading() {
+        if(footViewHolder!=null)
         footViewHolder.setLoad_status(STATUS_LOADING);
     }
 
     public void setLoadMoreOver() {
+        if(footViewHolder!=null)
         footViewHolder.setLoad_status(STATUS_OVER);
     }
 
     public void setLoadMoreInvisible() {
+        if(footViewHolder!=null)
         footViewHolder.setLoad_status(STATUS_INVISIBLE);
     }
 
     public void setLoadMoreError() {
+        if(footViewHolder!=null)
         footViewHolder.setLoad_status(STATUS_ERROR);
     }
 
