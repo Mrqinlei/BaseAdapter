@@ -5,8 +5,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import static com.qinlei.num.loadrecyclerlib.FootViewHolder.STATUS_LOADING;
-import static com.qinlei.num.loadrecyclerlib.FootViewHolder.STATUS_OVER;
+import com.qinlei.num.loadrecyclerlib.adapter.BaseLoadMoreAdapter;
+
+import static com.qinlei.num.loadrecyclerlib.viewholder.LoadMoreViewHolder.STATUS_LOADING;
+import static com.qinlei.num.loadrecyclerlib.viewholder.LoadMoreViewHolder.STATUS_OVER;
 
 /**
  * Created by ql on 2017/2/28.
@@ -55,21 +57,22 @@ public abstract class LoadMoreListener extends RecyclerView.OnScrollListener {
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
         int lastItemPosition = 0;
-        int totlacount = recyclerView.getAdapter().getItemCount();
+        int totalCount = recyclerView.getAdapter().getItemCount();
         lastItemPosition = getLastItemPosition(lastItemPosition, recyclerView);
 
         moreAdapter = (BaseLoadMoreAdapter) recyclerView.getAdapter();
         if (newState == RecyclerView.SCROLL_STATE_IDLE
-                && lastItemPosition + 1 == totlacount
-                && totlacount >= dataSize + 1) {
+                && lastItemPosition + 1 == totalCount
+                && totalCount >= dataSize + 1) {
             if (isRefreshing()) {
-                //如果正在刷新，则隐藏footer view
+                //如果正在刷新，则隐藏 footer view
                 moreAdapter.setLoadMoreInvisible();
             } else {
                 if (moreAdapter.getLoad_status() == STATUS_LOADING
                         || moreAdapter.getLoad_status() == STATUS_OVER) {
 
                 } else {
+                    moreAdapter.setLoadMoreLoading();
                     onLoadMore();
                 }
             }
@@ -87,7 +90,7 @@ public abstract class LoadMoreListener extends RecyclerView.OnScrollListener {
     }
 
     /**
-     * dataSize 默认为10 如果的数据.size() 小于dataSize 不回调
+     * dataSize 默认为10 如果的数据.size() 小于dataSize 不加载
      * 有刷新控件时刷新时 不回调
      * TATUS_LOADING ，STATUS_OVER 状态下 不回调
      */
