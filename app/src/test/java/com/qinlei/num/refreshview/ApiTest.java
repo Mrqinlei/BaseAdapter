@@ -26,7 +26,7 @@ public class ApiTest {
         final CountDownLatch latch = new CountDownLatch(1); //创建CountDownLatch
         ServiceGenerator
                 .getNormalRetrofitInstance(ParkApi.class)
-                .getThemeNews(11)
+                .getThemeNews(13)
                 .enqueue(new Callback<ThemeContentBean>() {
                     @Override
                     public void onResponse(Call<ThemeContentBean> call, Response<ThemeContentBean> response) {

@@ -1,4 +1,4 @@
-package com.qinlei.num.loadrecyclerlib;
+package com.qinlei.num.loadrecyclerlib.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -6,15 +6,17 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.qinlei.num.loadrecyclerlib.R;
+
 /**
  * Created by ql on 2017/3/3.
  */
 
-public class FootViewHolder extends RecyclerView.ViewHolder {
-    public static final int STATUS_LOADING = 10;
-    public static final int STATUS_OVER = 11;
-    public static final int STATUS_INVISIBLE = 13;
-    public static final int STATUS_ERROR = 14;
+public class LoadMoreViewHolder extends RecyclerView.ViewHolder {
+    public static final int STATUS_LOADING = Integer.MIN_VALUE + 1;
+    public static final int STATUS_OVER = Integer.MIN_VALUE + 2;
+    public static final int STATUS_INVISIBLE = Integer.MIN_VALUE + 3;
+    public static final int STATUS_ERROR = Integer.MIN_VALUE + 4;
 
     private int load_status = STATUS_INVISIBLE;//默认状态
 
@@ -22,14 +24,14 @@ public class FootViewHolder extends RecyclerView.ViewHolder {
     private TextView footTv;
     private ProgressBar footProgressBar;
 
-    protected FootViewHolder(View v) {
+    public LoadMoreViewHolder(View v) {
         super(v);
         footRoot = (LinearLayout) (itemView.findViewById(R.id.ll_item_load_more));
         footTv = (TextView) itemView.findViewById(R.id.tv_item_load_more);
         footProgressBar = (ProgressBar) itemView.findViewById(R.id.pb_item_load_more);
     }
 
-    protected int getLoad_status() {
+    public int getLoad_status() {
         return load_status;
     }
 
@@ -38,7 +40,7 @@ public class FootViewHolder extends RecyclerView.ViewHolder {
      *
      * @param load_status
      */
-    protected void setLoad_status(int load_status) {
+    public void setLoad_status(int load_status) {
         this.load_status = load_status;
         bindFooterItem();
     }

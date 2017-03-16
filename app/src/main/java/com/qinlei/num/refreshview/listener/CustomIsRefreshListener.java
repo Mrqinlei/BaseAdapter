@@ -1,4 +1,4 @@
-package com.qinlei.num.refreshview;
+package com.qinlei.num.refreshview.listener;
 
 import android.support.v4.widget.SwipeRefreshLayout;
 
