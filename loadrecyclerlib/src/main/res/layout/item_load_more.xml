@@ -9,9 +9,8 @@
 
     <ProgressBar
         android:id="@+id/pb_item_load_more"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:indeterminateDrawable="@drawable/progress_load_more" />
+        android:layout_width="18dp"
+        android:layout_height="18dp" />
 
     <TextView
         android:id="@+id/tv_item_load_more"

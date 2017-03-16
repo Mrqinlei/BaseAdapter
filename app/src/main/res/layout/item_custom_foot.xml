@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--在 FrameLayout 内定义你的头-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#333333">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="FOOT"
+            android:textColor="#ffff"
+            android:textSize="24sp" />
+    </LinearLayout>
+    <!--在 FrameLayout 内定义你的头-->
+
+</FrameLayout>
